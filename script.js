@@ -34,24 +34,7 @@ function addActivity() {
     renderActivities(); // Aggiorna la visualizzazione
 }
 
-// Funzione per esportare le attività in formato CSV e inviarle via mail
-function openMailClient() {
-    const activities = JSON.parse(localStorage.getItem("activities") || "[]");
-    if (activities.length === 0) return alert("Nessuna attività da inviare.");
-
-    const email = document.getElementById("email").value;
-    if (!email) {
-        alert("Inserisci una email valida.");
-        return;
-    }
-
-    const subject = encodeURIComponent("Attività Lavoro");
-    const body = encodeURIComponent("In allegato trovi il CSV delle attività. Per favore, usa il pulsante di download per scaricare il file.");
-    const mailtoLink = `mailto:${email}?subject=${subject}&body=${body}`;
-    window.location.href = mailtoLink;
-}
-
-// Funzione per scaricare il file CSV
+// Funzione per esportare le attività in formato CSV
 function downloadCSV() {
     const activities = JSON.parse(localStorage.getItem("activities") || "[]");
     if (activities.length === 0) return alert("Nessuna attività da scaricare.");
@@ -64,23 +47,38 @@ function downloadCSV() {
         csvContent += row + "\n";
     });
 
-    // Crea un Blob e genera un URL per il download
+    // Crea un Blob per il CSV
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
 
-    // Crea un elemento di ancoraggio per il download
+    // Crea un link per il download
     const downloadLink = document.createElement("a");
     downloadLink.href = url;
-    downloadLink.setAttribute("download", "attivita.csv"); // Nome del file
-    downloadLink.style.display = "none"; // Nascondi l'elemento
+    downloadLink.setAttribute("download", "attivita.csv");
 
     // Aggiungi il link al documento, simula il click e rimuovilo
     document.body.appendChild(downloadLink);
     downloadLink.click();
-    document.body.removeChild(downloadLink); // Rimuovi il link
+    document.body.removeChild(downloadLink);
 
     // Libera l'oggetto URL
     URL.revokeObjectURL(url);
+
+    alert("CSV scaricato! Puoi trovarlo nell'app File.");
+}
+
+// Funzione per inviare un'email
+function openMailClient() {
+    const email = document.getElementById("email").value;
+    if (!email) {
+        alert("Inserisci una email valida.");
+        return;
+    }
+
+    const subject = encodeURIComponent("Attività Lavoro");
+    const body = encodeURIComponent("Hai delle attività salvate. Utilizza il pulsante di download per scaricare il file CSV.");
+    const mailtoLink = `mailto:${email}?subject=${subject}&body=${body}`;
+    window.location.href = mailtoLink;
 }
 
 // Funzione per resettare tutte le attività con conferma
@@ -95,11 +93,9 @@ function resetActivities() {
 
 // Imposta valori di default per le ore di ingresso e uscita
 window.onload = function() {
-    // Valore di default per ora di ingresso (AM)
     const startTime = document.getElementById("startTime");
     startTime.value = "09:00";
 
-    // Valore di default per ora di uscita (PM)
     const endTime = document.getElementById("endTime");
     endTime.value = "17:00";
 
