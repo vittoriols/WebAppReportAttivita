@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro Attività</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Registro Attività Giornaliera</h1>
+        <form id="activityForm">
+            <label>Data:</label>
+            <input type="date" id="date" required><br>
+            <label>Ora di Ingresso:</label>
+            <input type="time" id="startTime" required><br>
+            <label>Ora di Uscita:</label>
+            <input type="time" id="endTime" required><br>
+            <label>Tipo Attività:</label>
+            <select id="activityType" required>
+                <option value="Sala Operatoria">Sala Operatoria</option>
+                <option value="Reparto">Reparto</option>
+            </select><br>
+            <label>Attività:</label>
+            <input type="text" id="activityDesc" required><br>
+            <button type="button" onclick="addActivity()">Aggiungi</button>
+        </form>
+        
+        <h2>Attività Inserite</h2>
+        <table id="activityTable">
+            <thead>
+                <tr>
+                    <th>Data</th>
+                    <th>Ora Ingresso</th>
+                    <th>Ora Uscita</th>
+                    <th>Tipo</th>
+                    <th>Descrizione</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+
+        <button onclick="exportCSV()">Esporta CSV via Mail</button>
+        <input type="email" id="email" placeholder="Email destinatario" required>
+        <button onclick="resetActivities()">Resetta Tutti</button>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
