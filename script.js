@@ -48,12 +48,22 @@ function exportCSV() {
         csvContent += row + "\n";
     });
 
-    const blob = new Blob([csvContent], { type: "text/csv" });
+    // Crea un Blob e genera un URL per il download
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
+
+    // Crea un elemento di ancoraggio per il download
     const downloadLink = document.createElement("a");
     downloadLink.href = url;
-    downloadLink.download = "attivita.csv";
+    downloadLink.setAttribute("download", "attivita.csv"); // Nome del file
+    downloadLink.style.display = "none"; // Nascondi l'elemento
+
+    // Aggiungi il link al documento, simula il click e rimuovilo
+    document.body.appendChild(downloadLink);
     downloadLink.click();
+    document.body.removeChild(downloadLink); // Rimuovi il link
+
+    // Libera l'oggetto URL
     URL.revokeObjectURL(url);
 
     const email = document.getElementById("email").value;

@@ -1,0 +1,81 @@
+/* Reset di margini e padding */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box; /* Include il padding e il margine nelle dimensioni totali */
+}
+
+/* Impostazioni generali */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9; /* Colore di sfondo chiaro */
+    color: #333; /* Colore del testo scuro per contrasto */
+    line-height: 1.6; /* Spaziatura tra le righe */
+    padding: 10px; /* Padding generale */
+}
+
+/* Titoli */
+h1, h2 {
+    color: #0056b3; /* Colore blu per i titoli */
+    margin-bottom: 10px; /* Spazio sotto i titoli */
+}
+
+/* Formattazione dei campi di input e textarea */
+input[type="date"],
+input[type="time"],
+input[type="email"],
+textarea,
+select {
+    width: 100%; /* Larghezza al 100% per utilizzo efficiente dello spazio */
+    padding: 10px; /* Padding interno */
+    margin-bottom: 15px; /* Spazio sotto gli input */
+    border: 1px solid #ccc; /* Bordo grigio chiaro */
+    border-radius: 5px; /* Angoli arrotondati */
+    font-size: 16px; /* Dimensione del testo */
+}
+
+/* Pulsanti */
+button {
+    background-color: #0056b3; /* Colore di sfondo blu */
+    color: white; /* Colore del testo bianco */
+    border: none; /* Rimuovi il bordo */
+    padding: 10px 15px; /* Padding interno */
+    margin-right: 5px; /* Margine a destra per separare i pulsanti */
+    border-radius: 5px; /* Angoli arrotondati */
+    font-size: 16px; /* Dimensione del testo */
+    cursor: pointer; /* Cursore a mano */
+    transition: background-color 0.3s; /* Transizione per il colore di sfondo */
+}
+
+/* Effetto hover sui pulsanti */
+button:hover {
+    background-color: #004494; /* Colore scuro al passaggio del mouse */
+}
+
+/* Lista delle attività */
+ul {
+    list-style: none; /* Rimuovi i punti elenco */
+    padding: 0; /* Rimuovi il padding */
+}
+
+/* Item della lista */
+li {
+    background-color: #ffffff; /* Sfondo bianco per gli item della lista */
+    border: 1px solid #ccc; /* Bordo grigio chiaro */
+    border-radius: 5px; /* Angoli arrotondati */
+    padding: 10px; /* Padding interno */
+    margin-bottom: 10px; /* Spazio sotto ogni item */
+}
+
+/* Media query per schermi più piccoli */
+@media (max-width: 600px) {
+    h1 {
+        font-size: 1.5em; /* Dimensione del titolo più piccola */
+    }
+
+    button {
+        width: 100%; /* Pulsanti a larghezza piena sui dispositivi più piccoli */
+        margin-right: 0; /* Rimuovi margine a destra */
+        margin-bottom: 10px; /* Aggiungi margine sotto */
+    }
+}
