@@ -35,13 +35,29 @@ function addActivity() {
 }
 
 // Funzione per esportare le attività in formato CSV e inviarle via mail
-function exportCSV() {
+function openMailClient() {
     const activities = JSON.parse(localStorage.getItem("activities") || "[]");
-    if (activities.length === 0) return alert("Nessuna attività da esportare.");
+    if (activities.length === 0) return alert("Nessuna attività da inviare.");
+
+    const email = document.getElementById("email").value;
+    if (!email) {
+        alert("Inserisci una email valida.");
+        return;
+    }
+
+    const subject = encodeURIComponent("Attività Lavoro");
+    const body = encodeURIComponent("In allegato trovi il CSV delle attività. Per favore, usa il pulsante di download per scaricare il file.");
+    const mailtoLink = `mailto:${email}?subject=${subject}&body=${body}`;
+    window.location.href = mailtoLink;
+}
+
+// Funzione per scaricare il file CSV
+function downloadCSV() {
+    const activities = JSON.parse(localStorage.getItem("activities") || "[]");
+    if (activities.length === 0) return alert("Nessuna attività da scaricare.");
 
     let csvContent = "Data,Ora Ingresso,Ora Uscita,Tipo,Descrizione\n";
     activities.forEach(activity => {
-        // Formattazione data in stile italiano per il CSV
         const dateFormatted = new Intl.DateTimeFormat("it-IT").format(new Date(activity.date));
         const formattedDesc = activity.activityDesc.replace(/[,;]/g, "\n");
         const row = `${dateFormatted},${activity.startTime},${activity.endTime},${activity.activityType},"${formattedDesc}"`;
@@ -65,19 +81,6 @@ function exportCSV() {
 
     // Libera l'oggetto URL
     URL.revokeObjectURL(url);
-
-    const email = document.getElementById("email").value;
-    if (email) {
-        const subject = encodeURIComponent("Attività Lavoro");
-        const body = encodeURIComponent(
-            "In allegato trovi il CSV delle attività. " +
-            "Per favore, allega manualmente il file che hai appena scaricato."
-        );
-        const mailtoLink = `mailto:${email}?subject=${subject}&body=${body}`;
-        window.location.href = mailtoLink;
-    } else {
-        alert("Inserisci una email valida.");
-    }
 }
 
 // Funzione per resettare tutte le attività con conferma

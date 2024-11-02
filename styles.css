@@ -1,3 +1,7 @@
+.form-group {
+    margin-bottom: 15px; /* Spazio tra i gruppi di input */
+}
+
 /* Reset di margini e padding */
 * {
     margin: 0;
