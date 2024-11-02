@@ -3,49 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro Attività</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Attività di Lavoro</title>
 </head>
 <body>
-    <div class="container">
-        <h1>Registro Attività Giornaliera</h1>
-        <form id="activityForm">
-            <label>Data:</label>
-            <input type="date" id="date" required><br>
-            <label>Ora di Ingresso:</label>
-            <input type="time" id="startTime" required><br>
-            <label>Ora di Uscita:</label>
-            <input type="time" id="endTime" required><br>
-            <label>Tipo Attività:</label>
-            <select id="activityType" required>
-                <option value="Sala Operatoria">Sala Operatoria</option>
-                <option value="Reparto">Reparto</option>
-            </select><br>
-            <label>Attività:</label>
-            <input type="text" id="activityDesc" required><br>
-            <button type="button" onclick="addActivity()">Aggiungi</button>
-        </form>
-        
-        <h2>Attività Inserite</h2>
-        <table id="activityTable">
-            <thead>
-                <tr>
-                    <th>Data</th>
-                    <th>Ora Ingresso</th>
-                    <th>Ora Uscita</th>
-                    <th>Tipo</th>
-                    <th>Descrizione</th>
-                </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table>
+    <h1>Inserisci le tue attività giornaliere</h1>
+    <label for="date">Data:</label>
+    <input type="date" id="date" lang="it" required>
 
-        <button onclick="exportCSV()">Esporta CSV via Mail</button>
-        <input type="email" id="email" placeholder="Email destinatario" required>
-        <button onclick="resetActivities()">Resetta Tutti</button>
-    </div>
-    
+    <label for="startTime">Ora di Ingresso:</label>
+    <input type="time" id="startTime" required>
+
+    <label for="endTime">Ora di Uscita:</label>
+    <input type="time" id="endTime" required>
+
+    <label for="activityType">Tipo Attività:</label>
+    <select id="activityType">
+        <option value="Attività di reparto">Attività di reparto</option>
+        <option value="Sala operatoria">Sala operatoria</option>
+        <option value="Attività di reparto e Sala operatoria">Attività di reparto e Sala operatoria</option>
+    </select>
+
+    <label for="activityDesc">Attività (descrizione):</label>
+    <textarea id="activityDesc" rows="4"></textarea>
+
+    <button onclick="addActivity()">Aggiungi Attività</button>
+    <button onclick="resetActivities()">Resetta Tutto</button>
+
+    <h2>Attività Inserite:</h2>
+    <ul id="activityList"></ul>
+
+    <label for="email">Email per l'invio:</label>
+    <input type="email" id="email" required>
+    <button onclick="exportCSV()">Esporta CSV via Mail</button>
+
+    <!-- Assicurati che il file script.js sia alla fine del corpo -->
     <script src="script.js"></script>
 </body>
 </html>
