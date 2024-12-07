@@ -32,6 +32,7 @@ function addActivity() {
     localStorage.setItem("activities", JSON.stringify(activities));
 
     renderActivities(); // Aggiorna la visualizzazione
+    createBackup(activities); // Crea un backup dopo ogni aggiunta
 }
 
 // Funzione per esportare le attività in formato CSV
@@ -91,6 +92,39 @@ function resetActivities() {
     }
 }
 
+// Funzione per creare un backup dei dati nel localStorage
+function createBackup(activities) {
+    const backup = JSON.stringify(activities);
+    localStorage.setItem("activitiesBackup", backup);
+}
+
+// Funzione per scaricare il backup come file JSON
+function downloadBackup() {
+    const activitiesBackup = localStorage.getItem("activitiesBackup");
+    if (!activitiesBackup) {
+        alert("Nessun backup disponibile.");
+        return;
+    }
+
+    const blob = new Blob([activitiesBackup], { type: "application/json;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+
+    // Crea un link per il download
+    const downloadLink = document.createElement("a");
+    downloadLink.href = url;
+    downloadLink.setAttribute("download", "backup_attivita.json");
+
+    // Aggiungi il link al documento, simula il click e rimuovilo
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+
+    // Libera l'oggetto URL
+    URL.revokeObjectURL(url);
+
+    alert("Backup scaricato come file JSON.");
+}
+
 // Imposta valori di default per le ore di ingresso e uscita
 window.onload = function() {
     const startTime = document.getElementById("startTime");
@@ -100,4 +134,11 @@ window.onload = function() {
     endTime.value = "17:00";
 
     renderActivities(); // Carica le attività salvate
+
+    // Aggiungi un listener per rileggere i dati dal localStorage se ci sono modifiche
+    window.onstorage = function(event) {
+        if (event.key === "activities" || event.key === "activitiesBackup") {
+            renderActivities();
+        }
+    };
 };
