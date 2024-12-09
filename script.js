@@ -1,136 +1,143 @@
-// Funzione per leggere il file activities.json
-async function readActivitiesFile() {
-    try {
-        const response = await fetch('activities.json');
-        if (!response.ok) throw new Error('Errore nel caricamento del file activities.json');
-        return await response.json();
-    } catch (error) {
-        console.error(error);
-        return [];
-    }
-}
-
-// Funzione per salvare dati nel file activities.json
-async function saveActivitiesFile(data) {
-    try {
-        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'activities.json';
-        a.click();
-        URL.revokeObjectURL(url);
-    } catch (error) {
-        console.error('Errore durante il salvataggio di activities.json:', error);
-    }
-}
+let activities = []; // Array per salvare le attività
 
 // Funzione per aggiungere una nuova attività
-async function addActivity() {
-    const date = document.getElementById('date').value;
-    const startTime = document.getElementById('startTime').value;
-    const endTime = document.getElementById('endTime').value;
-    const activityType = document.getElementById('activityType').value;
-    const activityDesc = document.getElementById('activityDesc').value;
+function addActivity() {
+    const date = document.getElementById("date").value;
+    const startTime = document.getElementById("startTime").value;
+    const endTime = document.getElementById("endTime").value;
+    const activityType = document.getElementById("activityType").value;
+    const activityDesc = document.getElementById("activityDesc").value;
 
     if (!date || !startTime || !endTime || !activityType) {
-        alert('Compila tutti i campi obbligatori.');
+        alert("Compila tutti i campi obbligatori.");
         return;
     }
 
+    // Aggiungi la nuova attività all'array
     const newActivity = { date, startTime, endTime, activityType, activityDesc };
-
-    // Leggi le attività esistenti
-    const activities = await readActivitiesFile();
     activities.push(newActivity);
 
-    // Salva il nuovo elenco
-    await saveActivitiesFile(activities);
-
-    renderActivities(); // Aggiorna la visualizzazione
+    // Salva l'array aggiornato nel file JSON
+    saveActivitiesToJSON();
+    renderActivities(); // Aggiorna la lista a schermo
 }
 
-// Funzione per visualizzare le attività
-async function renderActivities() {
-    const activityList = document.getElementById('activityList');
-    activityList.innerHTML = ''; // Pulisce la lista
+// Funzione per salvare tutte le attività nel file JSON
+function saveActivitiesToJSON() {
+    const jsonContent = JSON.stringify(activities, null, 2);
+    const blob = new Blob([jsonContent], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
 
-    const activities = await readActivitiesFile();
+    // Forza il download del file come "activities.json"
+    const downloadLink = document.createElement("a");
+    downloadLink.href = url;
+    downloadLink.setAttribute("download", "activities.json");
+
+    // Simula il clic per scaricare il file
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+
+    // Libera l'URL generato
+    URL.revokeObjectURL(url);
+}
+
+// Funzione per visualizzare le attività nella lista
+function renderActivities() {
+    const activityList = document.getElementById("activityList");
+    if (!activityList) return;
+
+    activityList.innerHTML = ""; // Pulisce la lista
 
     activities.forEach(activity => {
-        const dateFormatted = new Intl.DateTimeFormat('it-IT').format(new Date(activity.date));
-        const listItem = document.createElement('li');
+        const dateFormatted = new Intl.DateTimeFormat("it-IT").format(new Date(activity.date));
+        const listItem = document.createElement("li");
         listItem.textContent = `${dateFormatted} | ${activity.startTime} - ${activity.endTime} | ${activity.activityType} | ${activity.activityDesc}`;
         activityList.appendChild(listItem);
     });
 }
 
-// Funzione per resettare tutte le attività e fare un backup
-async function resetActivities() {
-    const confirmation = confirm('Sei sicuro di voler resettare tutte le attività?');
+// Funzione per resettare tutte le attività con backup
+function resetActivities() {
+    const confirmation = confirm("Sei sicuro di voler resettare tutte le attività?");
     if (!confirmation) return;
 
-    // Leggi le attività correnti
-    const activities = await readActivitiesFile();
-    if (activities.length === 0) {
-        alert('Nessuna attività da resettare.');
-        return;
+    if (activities.length > 0) {
+        // Crea un backup con nome specifico
+        const backupContent = JSON.stringify(activities, null, 2);
+        const blob = new Blob([backupContent], { type: "application/json" });
+        const backupName = `activities_backup_${new Date().toISOString().replace(/[:.]/g, '-')}.json`;
+        const backupLink = document.createElement("a");
+        backupLink.href = URL.createObjectURL(blob);
+        backupLink.setAttribute("download", backupName);
+
+        // Simula il clic per scaricare il backup
+        document.body.appendChild(backupLink);
+        backupLink.click();
+        document.body.removeChild(backupLink);
+
+        // Libera l'URL generato
+        URL.revokeObjectURL(backupLink.href);
     }
 
-    // Crea il nome del file di backup
-    const now = new Date();
-    const timestamp = now.toISOString().replace(/[-:.]/g, '').slice(0, 15);
-    const backupFileName = `activities_backup_${timestamp}.json`;
-
-    // Salva il backup
-    const blob = new Blob([JSON.stringify(activities, null, 2)], { type: 'application/json' });
-    const backupUrl = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = backupUrl;
-    a.download = backupFileName;
-    a.click();
-    URL.revokeObjectURL(backupUrl);
-
-    // Ripristina il file activities.json vuoto
-    await saveActivitiesFile([]);
-    renderActivities(); // Aggiorna la visualizzazione
-
-    alert('Backup completato e attività resettate.');
+    // Pulisci l'array delle attività
+    activities = [];
+    saveActivitiesToJSON(); // Salva un file JSON vuoto
+    renderActivities();
 }
 
-// Funzione per esportare le attività in formato CSV
-async function downloadCSV() {
-    const activities = await readActivitiesFile();
-    if (activities.length === 0) {
-        alert('Nessuna attività da esportare.');
-        return;
-    }
+// Funzione per caricare un backup JSON da un file
+function loadBackupFromFile(event) {
+    const file = event.target.files[0];
+    if (!file) return;
 
-    let csvContent = 'Data,Ora Ingresso,Ora Uscita,Tipo,Descrizione\n';
-    activities.forEach(activity => {
-        const dateFormatted = new Intl.DateTimeFormat('it-IT').format(new Date(activity.date));
-        const formattedDesc = activity.activityDesc.replace(/[,;]/g, '\n'); // Gestione della virgola
-        csvContent += `${dateFormatted},${activity.startTime},${activity.endTime},${activity.activityType},"${formattedDesc}"\n`;
+    const reader = new FileReader();
+    reader.onload = function (e) {
+        try {
+            const backupData = JSON.parse(e.target.result);
+            if (Array.isArray(backupData)) {
+                activities = backupData;
+                renderActivities(); // Mostra le attività caricate
+            } else {
+                alert("Il file selezionato non contiene un formato valido di attività.");
+            }
+        } catch (err) {
+            alert("Errore nel caricamento del file: " + err.message);
+        }
+    };
+
+    reader.readAsText(file);
+}
+
+// Funzione per esportare le attività in Excel
+function downloadExcel() {
+    const wb = XLSX.utils.book_new();
+    const wsData = activities.map(activity => {
+        // Formattare la data nel formato gg/mm/aaaa
+        const formattedDate = new Intl.DateTimeFormat("it-IT").format(new Date(activity.date));
+
+        return [
+            formattedDate, // Data formattata
+            activity.startTime,
+            activity.endTime,
+            activity.activityType,
+            activity.activityDesc.replace(/[,;]/g, '\n') // Gestione di virgola e punto e virgola (line break)
+        ];
     });
 
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'attivita.csv';
-    a.click();
-    URL.revokeObjectURL(url);
+    const ws = XLSX.utils.aoa_to_sheet([["Data", "Ora Ingresso", "Ora Uscita", "Tipo Attività", "Descrizione"]].concat(wsData));
+    XLSX.utils.book_append_sheet(wb, ws, "Attività");
 
-    alert('CSV scaricato con successo!');
+    // Genera il file Excel e lo scarica
+    XLSX.writeFile(wb, "attività_lavoro.xlsx");
 }
 
-// Imposta valori di default e carica le attività al caricamento della pagina
+
+// Inizializzazione al caricamento della pagina
 window.onload = function () {
-    const startTime = document.getElementById('startTime');
-    startTime.value = '09:00';
+    renderActivities(); // Mostra le attività salvate a schermo
 
-    const endTime = document.getElementById('endTime');
-    endTime.value = '17:00';
-
-    renderActivities();
+    // Aggiungi listener per il caricamento del file JSON
+    const fileInput = document.getElementById("backupFileInput");
+    fileInput.addEventListener("change", loadBackupFromFile);
 };

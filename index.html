@@ -5,10 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
     <title>Attività di Lavoro</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script> <!-- Aggiunto il link alla libreria -->
 </head>
 <body>
     <h1 style="white-space: nowrap;">Inserisci le tue attività giornaliere</h1>
     
+    <!-- Modulo per inserire attività -->
     <div class="form-group">
         <label for="date">Data:</label>
         <input type="date" id="date" lang="it" required>
@@ -44,12 +46,13 @@
     <h2>Attività Inserite:</h2>
     <ul id="activityList"></ul>
 
+    <!-- Pulsante per caricare il file di backup -->
     <div class="form-group">
-        <label for="email">Email per l'invio:</label>
-        <input type="email" id="email" required>
+        <label for="backupFileInput">Carica Backup JSON:</label>
+        <input type="file" id="backupFileInput" accept=".json">
     </div>
-    <button onclick="openMailClient()">Invia CSV via Mail</button>
-    <button onclick="downloadCSV()">Download CSV</button>
+
+    <button onclick="downloadExcel()">Download Excel</button> <!-- Modifica il testo del pulsante -->
 
     <script src="script.js"></script>
 </body>
